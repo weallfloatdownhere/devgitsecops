@@ -1,6 +1,6 @@
-# Azure Terraform Backend Setup Command
+# Terraform Backend Setup Command
 
-The `setup-terraform-backend` command is now built directly into devgitsecops! No need for separate scripts.
+The `terraform setup-backend-azure` command is built directly into devgitsecops to automate Azure backend infrastructure setup.
 
 ## Quick Start
 
@@ -9,7 +9,7 @@ The `setup-terraform-backend` command is now built directly into devgitsecops! N
 devgitsecops install az --auto
 
 # Setup Terraform backend (one command - handles login automatically!)
-devgitsecops setup-terraform-backend --environment production
+devgitsecops terraform setup-backend-azure --environment production
 ```
 
 **Note:** The command automatically checks if you're logged in to Azure and prompts for authentication if needed. No need to run `az login` separately!
@@ -29,7 +29,7 @@ The command follows this flow:
 ## Command Usage
 
 ```bash
-devgitsecops setup-terraform-backend [flags]
+devgitsecops terraform setup-backend-azure [flags]
 ```
 
 ### Flags
@@ -44,7 +44,7 @@ devgitsecops setup-terraform-backend [flags]
 ### Basic Setup (Development)
 
 ```bash
-devgitsecops setup-terraform-backend
+devgitsecops terraform setup-backend-azure
 ```
 
 Creates:
@@ -56,13 +56,13 @@ Creates:
 ### Production Environment
 
 ```bash
-devgitsecops setup-terraform-backend --environment production --location westus2
+devgitsecops terraform setup-backend-azure --environment production --location westus2
 ```
 
 ### With Custom Prefix
 
 ```bash
-devgitsecops setup-terraform-backend \
+devgitsecops terraform setup-backend-azure \
   --environment staging \
   --prefix mycompany \
   --location eastus
@@ -76,7 +76,7 @@ Creates:
 ### CI/CD (Non-Interactive)
 
 ```bash
-devgitsecops setup-terraform-backend \
+devgitsecops terraform setup-backend-azure \
   --environment prod \
   --auto-approve
 ```
@@ -163,7 +163,7 @@ devgitsecops az keyvault secret show \
 devgitsecops install az --auto
 
 # 2. Create Terraform backend infrastructure (auto-login included!)
-devgitsecops setup-terraform-backend --environment production
+devgitsecops terraform setup-backend-azure --environment production
 
 # 3. Create your Terraform project
 mkdir my-terraform-project
@@ -257,7 +257,7 @@ az login
 
 ```bash
 # Just run it - auto-login included!
-devgitsecops setup-terraform-backend --environment production
+devgitsecops terraform setup-backend-azure --environment production
 ```
 
 **Benefits:**
@@ -278,12 +278,12 @@ devgitsecops setup-terraform-backend --environment production
     targetType: 'inline'
     script: |
       # Ensure devgitsecops is available
-      ./devgitsecops setup-terraform-backend \
+      ./devgitsecops terraform setup-backend-azure \
         --environment $(Environment) \
         --auto-approve
       
-      ./devgitsecops terraform init
-      ./devgitsecops terraform plan
+      terraform init
+      terraform plan
 ```
 
 ### GitHub Actions
@@ -291,12 +291,12 @@ devgitsecops setup-terraform-backend --environment production
 ```yaml
 - name: Setup Terraform Backend
   run: |
-    ./devgitsecops setup-terraform-backend \
+    ./devgitsecops terraform setup-backend-azure \
       --environment production \
       --auto-approve
     
-    ./devgitsecops terraform init
-    ./devgitsecops terraform plan
+    terraform init
+    terraform plan
   env:
     ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 ```
@@ -307,13 +307,13 @@ Create backends for different environments:
 
 ```bash
 # Development
-devgitsecops setup-terraform-backend --environment dev
+devgitsecops terraform setup-backend-azure --environment dev
 
 # Staging
-devgitsecops setup-terraform-backend --environment staging
+devgitsecops terraform setup-backend-azure --environment staging
 
 # Production
-devgitsecops setup-terraform-backend --environment production
+devgitsecops terraform setup-backend-azure --environment production
 ```
 
 Each environment gets its own isolated backend infrastructure!

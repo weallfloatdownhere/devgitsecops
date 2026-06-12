@@ -1,15 +1,15 @@
 # devgitsecops
 
-A unified command-line interface that embeds multiple DevOps tools into a single binary, making it easier to manage your infrastructure and deployments.
+A DevOps toolkit manager with automated setup commands for common infrastructure tasks. Easily install, manage, and automate your DevOps tools.
 
 ## Features
 
-🚀 **Single Binary** - One tool to rule them all  
-� **Auto-Download** - Automatically downloads and installs tools on first use  
-🔧 **Multiple Tools** - Access all your favorite DevOps tools through one interface  
-📦 **Easy Distribution** - Distribute one binary instead of managing multiple tool installations  
+📥 **Auto-Download** - Automatically downloads and installs DevOps tools from official sources  
+🔧 **Tool Management** - Install, check status, and manage multiple DevOps tools  
+📦 **Easy Distribution** - Single binary that handles all tool installations  
 ⚡ **Quick Setup** - Just run `devgitsecops install --all` and you're ready to go!  
-☁️ **Cloud Automation** - Built-in commands for common cloud operations (Terraform backend setup, etc.)
+☁️ **Automation Commands** - Built-in commands for common tasks (Terraform backend setup, etc.)  
+🔒 **Secure** - Downloads from official sources, stores credentials in Key Vault
 
 ## Embedded Tools
 
@@ -102,88 +102,55 @@ If you prefer to use tools already installed on your system:
 
 ### 4. Use the Tools
 
-Once installed, use the tools through devgitsecops:
+Once installed, use the tools directly:
 
 ```bash
-# Kubernetes operations
-./bin/devgitsecops kubectl get pods
-./bin/devgitsecops kubectl apply -f deployment.yaml
+# Tools are installed and ready to use
+kubectl get pods
+helm list
+terraform init
+az login
+aws s3 ls
+kustomize build ./overlays/production
 
-# Helm operations
-./bin/devgitsecops helm list
-./bin/devgitsecops helm install myapp ./chart
-
-# Terraform operations
-./bin/devgitsecops terraform init
-./bin/devgitsecops terraform plan
-./bin/devgitsecops terraform apply
-
-# Azure operations
-./bin/devgitsecops az login
-./bin/devgitsecops az vm list
-
-# AWS operations
-./bin/devgitsecops aws s3 ls
-./bin/devgitsecops aws ec2 describe-instances
-
-# Kustomize operations
-./bin/devgitsecops kustomize build ./overlays/production
+# Or use automation commands
+devgitsecops terraform setup-backend-azure --environment production
 ```
 
 ## Usage Examples
 
-### Kubernetes Workflow
+### Tool Management
 
 ```bash
-# Check cluster info
-devgitsecops kubectl cluster-info
+# Check what tools are installed
+devgitsecops status
 
-# Apply configurations
-devgitsecops kubectl apply -k ./overlays/production
+# Install specific tools
+devgitsecops install kubectl
+devgitsecops install terraform
 
-# Use helm
-devgitsecops helm repo add stable https://charts.helm.sh/stable
-devgitsecops helm install nginx stable/nginx-ingress
+# Install all supported tools
+devgitsecops install --all
+
+# Check version
+devgitsecops version
 ```
 
-### Infrastructure as Code
+### Automation Commands
 
-```bash
-# Initialize Terraform
-devgitsecops terraform init
-
-# Plan changes
-devgitsecops terraform plan -out=tfplan
-
-# Apply changes
-devgitsecops terraform apply tfplan
-```
-
-### Cloud Operations
-
-```bash
-# Azure
-devgitsecops az account list
-devgitsecops az group create --name myResourceGroup --location eastus
-
-# AWS
-devgitsecops aws configure
-devgitsecops aws s3 mb s3://my-bucket
-```
-
-### Terraform Backend Setup
+#### Terraform Backend Setup
 
 Quickly set up Azure infrastructure for Terraform remote state:
 
 ```bash
 # Setup backend for development environment (handles Azure login automatically!)
-devgitsecops setup-terraform-backend --environment dev
+devgitsecops terraform setup-backend-azure --environment dev
 
 # Setup for production with custom location
-devgitsecops setup-terraform-backend --environment production --location westus2
+devgitsecops terraform setup-backend-azure --environment production --location westus2
 
 # Auto-approve without confirmation
-devgitsecops setup-terraform-backend --environment staging --auto-approve
+devgitsecops terraform setup-backend-azure --environment staging --auto-approve
 ```
 
 This command automatically:
@@ -218,20 +185,21 @@ tools:
 
 ```
 devgitsecops/
-├── main.go                 # Entry point
-├── cmd/                    # CLI commands
-│   ├── root.go            # Root command
-│   ├── kubectl.go         # kubectl wrapper
-│   ├── helm.go            # helm wrapper
-│   ├── terraform.go       # terraform wrapper
-│   ├── az.go              # az wrapper
-│   ├── aws.go             # aws wrapper
-│   ├── kustomize.go       # kustomize wrapper
-│   ├── install.go         # Installation command
-│   └── status.go          # Status command
+├── main.go                     # Entry point
+├── cmd/                        # CLI commands
+│   ├── root.go                # Root command
+│   ├── install.go             # Tool installation
+│   ├── status.go              # Status checking
+│   ├── version.go             # Version info
+│   ├── terraform.go           # Terraform parent command
+│   └── setup_terraform_backend.go  # Azure backend setup subcommand
 ├── internal/
-│   └── executor/          # Tool execution logic
-│       └── executor.go
+│   ├── executor/              # Tool execution logic
+│   │   └── executor.go
+│   └── downloader/            # Tool download logic
+│       └── downloader.go
+├── scripts/                    # Helper scripts (legacy)
+├── docs/                       # Documentation
 ├── go.mod
 ├── go.sum
 ├── Makefile
@@ -262,6 +230,15 @@ make lint
 1. Create a new command file in `cmd/` directory (e.g., `cmd/newtool.go`)
 2. Follow the pattern from existing tool commands
 3. Add the tool to the status and install commands
+
+### Adding New Automation Commands
+
+To add new automation commands like `setup-backend-azure`:
+
+1. Create a parent command file if needed (e.g., `cmd/kubernetes.go`)
+2. Create the subcommand file (e.g., `cmd/setup_cluster.go`)
+3. Register the subcommand with the parent in its `init()` function
+4. Follow the existing patterns for Azure login, confirmation, etc.
 
 ## Troubleshooting
 

@@ -20,7 +20,7 @@ var (
 )
 
 var setupTerraformBackendCmd = &cobra.Command{
-	Use:   "setup-terraform-backend",
+	Use:   "setup-backend-azure",
 	Short: "Setup Azure Terraform backend infrastructure",
 	Long: `Creates all resources needed for storing Terraform state in Azure:
   - Resource Group
@@ -31,15 +31,15 @@ var setupTerraformBackendCmd = &cobra.Command{
 The command automatically checks your Azure login status and prompts for
 authentication if needed. All resources follow Azure best practices for
 security and reliability.`,
-	Example: `  devgitsecops setup-terraform-backend
-  devgitsecops setup-terraform-backend --environment production
-  devgitsecops setup-terraform-backend --environment staging --location westus2
-  devgitsecops setup-terraform-backend --environment prod --auto-approve`,
+	Example: `  devgitsecops terraform setup-backend-azure
+  devgitsecops terraform setup-backend-azure --environment production
+  devgitsecops terraform setup-backend-azure --environment staging --location westus2
+  devgitsecops terraform setup-backend-azure --environment prod --auto-approve`,
 	RunE: runSetupTerraformBackend,
 }
 
 func init() {
-	rootCmd.AddCommand(setupTerraformBackendCmd)
+	terraformCmd.AddCommand(setupTerraformBackendCmd)
 	
 	setupTerraformBackendCmd.Flags().StringVarP(&setupEnvironment, "environment", "e", "dev", "Environment name (dev, staging, production)")
 	setupTerraformBackendCmd.Flags().StringVarP(&setupLocation, "location", "l", "eastus", "Azure region")

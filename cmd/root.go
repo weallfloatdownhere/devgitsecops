@@ -13,12 +13,16 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "devgitsecops",
-	Short: "A unified CLI tool for DevOps operations",
-	Long: `devgitsecops is a unified command-line interface that embeds multiple 
-DevOps tools into a single binary, making it easier to manage your 
-infrastructure and deployments.
+	Short: "DevOps toolkit manager and automation commands",
+	Long: `devgitsecops helps you manage and automate your DevOps workflows.
 
-Embedded tools:
+Features:
+  - Install and manage DevOps tools (kubectl, helm, terraform, etc.)
+  - Automated setup commands for common infrastructure tasks
+  - Check tool status and versions
+  - Download tools automatically from official sources
+
+Supported tools:
   - kubectl    (Kubernetes CLI)
   - kustomize  (Kubernetes configuration management)
   - helm       (Kubernetes package manager)

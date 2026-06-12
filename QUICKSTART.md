@@ -2,7 +2,7 @@
 
 ## What is devgitsecops?
 
-A unified command-line interface that **automatically downloads and embeds** multiple DevOps tools. Instead of managing 6+ different CLI tools, you can use one tool that handles everything!
+A DevOps toolkit manager that **automatically downloads and manages** multiple DevOps tools, plus provides automation commands for common infrastructure tasks. One tool to install and manage all your DevOps CLIs!
 
 ## Installation Status
 
@@ -57,31 +57,19 @@ If you already have tools installed:
 
 ### 3. Use the Tools
 
-Once tools are installed, use them through devgitsecops:
+Once installed, tools are available in your PATH:
 
 ```powershell
-# Kubernetes operations
-.\bin\devgitsecops.exe kubectl get pods
-.\bin\devgitsecops.exe kubectl apply -f deployment.yaml
+# Tools are ready to use directly
+kubectl get pods
+helm list
+terraform init
+az login
+aws s3 ls
+kustomize build ./overlays/production
 
-# Helm operations
-.\bin\devgitsecops.exe helm list
-.\bin\devgitsecops.exe helm install myapp ./chart
-
-# Terraform operations
-.\bin\devgitsecops.exe terraform init
-.\bin\devgitsecops.exe terraform plan
-
-# Azure CLI
-.\bin\devgitsecops.exe az login
-.\bin\devgitsecops.exe az vm list
-
-# AWS CLI
-.\bin\devgitsecops.exe aws s3 ls
-.\bin\devgitsecops.exe aws ec2 describe-instances
-
-# Kustomize
-.\bin\devgitsecops.exe kustomize build ./overlays/production
+# Use automation commands from devgitsecops
+.\bin\devgitsecops.exe terraform setup-backend-azure --environment production
 ```
 
 ## Add to PATH (Optional)
@@ -115,30 +103,25 @@ devgitsecops helm list
 ## Real-World Example Workflow
 
 ```powershell
-# 1. Setup Azure Terraform backend (NEW! - includes auto-login)
-devgitsecops setup-terraform-backend --environment production --location eastus
+# 1. Install all DevOps tools
+devgitsecops install --all
 
-# 2. Check cluster connection
-devgitsecops kubectl cluster-info
+# 2. Setup Azure Terraform backend (includes auto-login)
+devgitsecops terraform setup-backend-azure --environment production --location eastus
 
-# 3. Build kustomize configuration
-devgitsecops kustomize build ./environments/production
+# 3. Use the installed tools directly
+kubectl cluster-info
+kustomize build ./environments/production
+kubectl apply -k ./environments/production
+helm upgrade --install myapp ./charts/myapp
 
-# 4. Apply to cluster
-devgitsecops kubectl apply -k ./environments/production
+# 4. Provision infrastructure with Terraform
+terraform init
+terraform apply -var-file=production.tfvars
 
-# 5. Deploy with Helm
-devgitsecops helm upgrade --install myapp ./charts/myapp
-
-# 6. Provision infrastructure with Terraform
-devgitsecops terraform init
-devgitsecops terraform apply -var-file=production.tfvars
-
-# 7. Manage Azure resources
-devgitsecops az aks get-credentials --resource-group myRG --name myCluster
-
-# 8. Manage AWS resources
-devgitsecops aws eks update-kubeconfig --name my-cluster
+# 5. Manage cloud resources
+az aks get-credentials --resource-group myRG --name myCluster
+aws eks update-kubeconfig --name my-cluster
 ```
 
 ## Tool Storage Location
