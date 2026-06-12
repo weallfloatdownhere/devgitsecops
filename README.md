@@ -8,7 +8,8 @@ A unified command-line interface that embeds multiple DevOps tools into a single
 � **Auto-Download** - Automatically downloads and installs tools on first use  
 🔧 **Multiple Tools** - Access all your favorite DevOps tools through one interface  
 📦 **Easy Distribution** - Distribute one binary instead of managing multiple tool installations  
-⚡ **Quick Setup** - Just run `devgitsecops install --all` and you're ready to go!
+⚡ **Quick Setup** - Just run `devgitsecops install --all` and you're ready to go!  
+☁️ **Cloud Automation** - Built-in commands for common cloud operations (Terraform backend setup, etc.)
 
 ## Embedded Tools
 
@@ -170,6 +171,30 @@ devgitsecops aws configure
 devgitsecops aws s3 mb s3://my-bucket
 ```
 
+### Terraform Backend Setup
+
+Quickly set up Azure infrastructure for Terraform remote state:
+
+```bash
+# Setup backend for development environment (handles Azure login automatically!)
+devgitsecops setup-terraform-backend --environment dev
+
+# Setup for production with custom location
+devgitsecops setup-terraform-backend --environment production --location westus2
+
+# Auto-approve without confirmation
+devgitsecops setup-terraform-backend --environment staging --auto-approve
+```
+
+This command automatically:
+- ✅ Checks Azure login status and logs you in if needed
+- ✅ Creates Resource Group
+- ✅ Creates Storage Account (encrypted, versioned, HTTPS-only)
+- ✅ Creates Blob Container for state files
+- ✅ Creates Key Vault with stored credentials
+
+After setup, you get a ready-to-use Terraform backend configuration!
+
 ## Configuration
 
 devgitsecops stores tool binaries in `~/.devgitsecops/bin/`. You can customize this location by modifying the executor package.
@@ -279,9 +304,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 MIT License
 
 ## Roadmap
-
-- [ ] Automatic binary downloads
+x] Automatic binary downloads
+- [x] Azure Terraform backend setup automation
 - [ ] Version management for tools
+- [ ] Update command to refresh tool versions
+- [ ] AWS Terraform backend setup
+- [ ] Kubernetes cluster setup helper
 - [ ] Update command to refresh tool versions
 - [ ] Plugin system for custom tools
 - [ ] Shell completion scripts

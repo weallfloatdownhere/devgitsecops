@@ -115,26 +115,29 @@ devgitsecops helm list
 ## Real-World Example Workflow
 
 ```powershell
-# 1. Check cluster connection
+# 1. Setup Azure Terraform backend (NEW! - includes auto-login)
+devgitsecops setup-terraform-backend --environment production --location eastus
+
+# 2. Check cluster connection
 devgitsecops kubectl cluster-info
 
-# 2. Build kustomize configuration
+# 3. Build kustomize configuration
 devgitsecops kustomize build ./environments/production
 
-# 3. Apply to cluster
+# 4. Apply to cluster
 devgitsecops kubectl apply -k ./environments/production
 
-# 4. Deploy with Helm
+# 5. Deploy with Helm
 devgitsecops helm upgrade --install myapp ./charts/myapp
 
-# 5. Provision infrastructure with Terraform
+# 6. Provision infrastructure with Terraform
 devgitsecops terraform init
 devgitsecops terraform apply -var-file=production.tfvars
 
-# 6. Manage Azure resources
+# 7. Manage Azure resources
 devgitsecops az aks get-credentials --resource-group myRG --name myCluster
 
-# 7. Manage AWS resources
+# 8. Manage AWS resources
 devgitsecops aws eks update-kubeconfig --name my-cluster
 ```
 
@@ -167,7 +170,9 @@ This keeps your system clean and organized!
 ## Benefits
 
 ✅ **Single Binary** - One tool instead of 6+  
-✅ **Consistent Interface** - Same command structure for all tools  
+✅ **Consistent Interface** - Same command structure for all   
+✅ **Cloud Automation** - Built-in commands for common cloud tasks  
+✅ **Terraform Backend Setup** - One command to setup Azure backend infrastructuretools  
 ✅ **Easy Distribution** - Share one binary with your team  
 ✅ **Organized** - All tools in one managed location  
 ✅ **Version Tracking** - Check versions of all tools at once
